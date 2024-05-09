@@ -3,10 +3,17 @@ from django.http import JsonResponse
 from.models import *
 from.forms import *
 from.serializers import TaskSerializer
+from.serializers import UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Task
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 @api_view(['GET'])
 def api(request):
@@ -95,3 +102,19 @@ def delete(request,pk):
         return redirect("/")
     content={'item':item}
     return  render(request,'delete.html',content)
+
+
+class RegisterUser(APIView):
+    def post(self,request):
+        serializer = UserSerializer(data = request.data)
+        
+        if not serializer.is_valid():
+            return Response({'status':403 , 'errors':serializer.errors,'message':'some errors'})
+            
+            
+        serializer.save()
+
+        user = User.objects.get(username = serializer.data['username'])
+        token_obj , _ = Token.objects.get_or_create(user=user)
+
+        return Response({'status':200,'payload':serializer.data,'message':'your data is saved'})

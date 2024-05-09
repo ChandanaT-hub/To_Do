@@ -55,6 +55,8 @@
 <body>
 <h1 align="center"> TO DO LIST </h1>
 <div class="center-column">
+	
+        
 <form method="POST" action='/'>
     {% csrf_token %}
     {{form.title}}
@@ -75,6 +77,9 @@
 </div>
 {% endfor %}
         </div>
+		<!-- <div align="center">
+			<a href="{% url 'registration' %}" class="btn btn-primary">Register</a>
+		</div> -->
     </div>
 </body>
 </html>
